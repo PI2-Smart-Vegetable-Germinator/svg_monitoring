@@ -1,0 +1,2 @@
+create database svg_monitoring_dev;
+create database svg_monitoring_test;
