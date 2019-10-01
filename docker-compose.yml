@@ -27,3 +27,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+networks:
+  svg_shared:
+    external:
+      name: svg_shared
