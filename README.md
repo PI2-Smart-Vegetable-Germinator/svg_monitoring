@@ -22,3 +22,5 @@ Após clonar o repositório, rodar `docker-compose up`. Com o container rodando,
 e em seguida:
 
 - `docker exec -it svg_monitoring_app_1 python manage.py db upgrade`
+
+Este container roda na porta 5001 da máquina _host_.
