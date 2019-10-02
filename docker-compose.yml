@@ -17,13 +17,21 @@ services:
       - SECRET_KEY=supersecretdevonlykey
     depends_on:
       - db
-
+    networks:
+      - svg_shared
+      - default
   db:
     build:
       context: ./project/db
       dockerfile: Dockerfile
     ports:
-      - 5106:5432
+      - 5107:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    networks:
+      - default
+networks:
+  svg_shared:
+    external:
+      name: svg_shared

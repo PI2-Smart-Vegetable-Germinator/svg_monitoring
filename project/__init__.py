@@ -6,10 +6,12 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 
 db = SQLAlchemy()
+migrate = Migrate()
 ma = Marshmallow()
 bcrypt = Bcrypt()
 jwt = JWTManager()
@@ -19,6 +21,7 @@ app = Flask(__name__)
 app.config.from_object(app_config)
 
 db.init_app(app)
+migrate.init_app(app, db)
 ma.init_app(app)
 bcrypt.init_app(app)
 jwt.init_app(app)
@@ -28,6 +31,10 @@ CORS(app)
 from project.api.planting_status.views import planting_status_blueprint
 app.register_blueprint(planting_status_blueprint)
 
+
+from project.api.planting_status.models import *
+from project.api.irrigation.models import *
+from project.api.illumination.models import *
 
 @app.cli.command('test')
 def test():
