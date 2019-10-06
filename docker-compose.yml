@@ -8,6 +8,8 @@ services:
       - 5001:5000
     volumes:
       - '.:/app'
+    external_links:
+      - svg_gateway_app_1:svg_gateway 
     environment:
       - FLASK_APP=project/__init__.py
       - FLASK_ENV=development
@@ -15,6 +17,7 @@ services:
       - DATABASE_URI=postgres://postgres:postgres@db:5432/svg_monitoring_dev
       - TEST_DATABASE_URI=postgres://postgres:postgres@db:5432/svg_monitoring_test
       - SECRET_KEY=supersecretdevonlykey
+      - SVG_GATEWAY_BASE_URI=http://svg_gateway:5000
     depends_on:
       - db
     networks:

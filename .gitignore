@@ -4,3 +4,4 @@ env
 htmlcov/
 .coverage
 coverage.xml
+app.log

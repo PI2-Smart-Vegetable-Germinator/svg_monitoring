@@ -8,7 +8,20 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+import logging
+import requests
+logging.basicConfig(filename='app.log', level=logging.INFO)
 
+from apscheduler.schedulers.background import BackgroundScheduler
+
+def update_planting_photos():
+    response = requests.get('%s/api/ping' % os.getenv('SVG_GATEWAY_BASE_URI'))
+    print(response)
+
+cron = BackgroundScheduler()
+cron.add_job(update_planting_photos, 'cron', minute=00, hour=10)
+
+cron.start()
 
 db = SQLAlchemy()
 migrate = Migrate()
