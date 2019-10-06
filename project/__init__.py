@@ -14,15 +14,6 @@ logging.basicConfig(filename='app.log', level=logging.INFO)
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-def update_planting_photos():
-    response = requests.get('%s/api/ping' % os.getenv('SVG_GATEWAY_BASE_URI'))
-    print(response)
-
-cron = BackgroundScheduler()
-cron.add_job(update_planting_photos, 'cron', minute=00, hour=10)
-
-cron.start()
-
 db = SQLAlchemy()
 migrate = Migrate()
 ma = Marshmallow()
@@ -34,6 +25,7 @@ app = Flask(__name__)
 app.config.from_object(app_config)
 
 db.init_app(app)
+db.app = app
 migrate.init_app(app, db)
 ma.init_app(app)
 bcrypt.init_app(app)
@@ -48,6 +40,21 @@ app.register_blueprint(planting_status_blueprint)
 from project.api.planting_status.models import *
 from project.api.irrigation.models import *
 from project.api.illumination.models import *
+
+from .api.planting_status.models import Machines, Plantings, Seedlings
+
+def update_planting_photos():
+    plantings = Plantings.query.all()
+
+    for planting in plantings:
+        print(planting.id)
+
+cron = BackgroundScheduler()
+cron.add_job(update_planting_photos, 'cron', minute=00, hour=10)
+
+cron.start()
+
+update_planting_photos()
 
 @app.cli.command('test')
 def test():

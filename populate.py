@@ -9,7 +9,7 @@ def seedMachine(db):
 def seedPlanting(db):
     machine = Machines.query.first()
     seedling = Seedlings.query.first()
-    db.session.add(Plantings(name='fejao', planting_date='2019-10-06 15:43:40.300649', sprouted_seedlings=0, current_humidity=20, current_temperature=30, hours_backlit=5, cycle_finished=True, picture_url='url', machine=machine, seedling=seedling))
+    db.session.add(Plantings(name='fejao', planting_date='2019-10-06 15:43:40.300649', sprouted_seedlings=0, current_humidity=20, current_temperature=30, hours_backlit=5, cycle_finished=False, picture_url='url', machine=machine, seedling=seedling))
     db.session.commit()
 
 

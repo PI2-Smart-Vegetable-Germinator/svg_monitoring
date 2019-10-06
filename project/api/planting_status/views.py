@@ -7,6 +7,8 @@ from project import db
 from .models import Machines, Plantings, Seedlings
 
 planting_status_blueprint = Blueprint('planting_status', __name__)
+from .models import Machines, Plantings, Seedlings
+
 
 
 @planting_status_blueprint.route('/api/ping', methods=['GET'])
@@ -42,4 +44,11 @@ def get_current_info():
             'current_temperature': plantings_data.current_temperature,
             'hours_backlit': plantings_data.hours_backlit
         }
+    }), 200
+@planting_status_blueprint.route('/api/get_id', methods=['GET'])
+def get_id():
+    machines = Machines.query.first()
+
+    return jsonify({
+        'response': machines.id
     }), 200
