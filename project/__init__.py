@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import logging
 import requests
+import json
 logging.basicConfig(filename='app.log', level=logging.INFO)
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -44,10 +45,17 @@ from project.api.illumination.models import *
 from .api.planting_status.models import Machines, Plantings, Seedlings
 
 def update_planting_photos():
-    plantings = Plantings.query.all()
-
+    plantings = Plantings.query.filter_by(cycle_finished='false')
+    
     for planting in plantings:
-        print(planting.id)
+        machine = Machines.query.filter_by(id=planting.machine_id).first()
+        if machine:
+            rasp_ip = machine.raspberry_ip
+            data={'raspberry_ip' : str(rasp_ip), 'planting_id' : planting.id}
+            response = requests.post('%s/api/trigger_image_capture' % os.getenv('SVG_GATEWAY_BASE_URI'), json=json.dumps(data))
+    
+    db.session.close()
+    return response
 
 cron = BackgroundScheduler()
 cron.add_job(update_planting_photos, 'cron', minute=00, hour=10)
