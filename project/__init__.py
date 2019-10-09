@@ -52,7 +52,7 @@ def update_planting_photos():
         if machine:
             rasp_ip = machine.raspberry_ip
             data={'raspberry_ip' : str(rasp_ip), 'planting_id' : planting.id}
-            response = requests.post('%s/api/trigger_image_capture' % os.getenv('SVG_GATEWAY_BASE_URI'), json=json.dumps(data))
+            response = requests.post('%s/api/trigger_image_capture' % os.getenv('SVG_GATEWAY_BASE_URI'), json=data)
     
     db.session.close()
     return response
