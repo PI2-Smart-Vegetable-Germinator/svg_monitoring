@@ -2,6 +2,7 @@ from project import db
 
 
 class Machines(db.Model):
+    __tablename__ = 'machines'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     pincode = db.Column(db.Integer)
@@ -13,8 +14,19 @@ class Machines(db.Model):
     planting_active = db.Column(db.Boolean, default=False)
 
     plantings = db.relationship("Plantings", back_populates="machine")
-    irrigation_schedules = db.relationship("IrrigationSchedules", back_populates="machine")
-    illumination_schedules = db.relationship("IlluminationSchedules", back_populates="machine")
+    irrigation_schedules = db.relationship(
+        "IrrigationSchedules", back_populates="machine")
+    illumination_schedules = db.relationship(
+        "IlluminationSchedules", back_populates="machine")
+
+    def __init__(self, pincode, raspberry_ip, currently_backlit, currently_irrigating, smart_irrigation_enabled, smart_illumination_enabled, planting_active):
+        self.pincode = pincode
+        self.raspberry_ip = raspberry_ip
+        self.currently_backlit = currently_backlit
+        self.currently_irrigating = currently_irrigating
+        self.smart_irrigation_enabled = smart_irrigation_enabled
+        self.smart_illumination_enabled = smart_illumination_enabled
+        self.planting_active = planting_active
 
 
 class Plantings(db.Model):
@@ -35,8 +47,10 @@ class Plantings(db.Model):
     seedling_id = db.Column(db.Integer, db.ForeignKey('seedlings.id'))
     seedling = db.relationship("Seedlings", back_populates="plantings")
 
-    irrigations_history = db.relationship("IrrigationsHistory", back_populates="planting")
-    illuminations_history = db.relationship("IlluminationsHistory", back_populates="planting")
+    irrigations_history = db.relationship(
+        "IrrigationsHistory", back_populates="planting")
+    illuminations_history = db.relationship(
+        "IlluminationsHistory", back_populates="planting")
 
 
 class Seedlings(db.Model):
