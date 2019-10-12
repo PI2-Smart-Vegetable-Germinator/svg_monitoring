@@ -14,10 +14,10 @@ def ping():
     return jsonify({
         'response': 'pong!'
     }), 200
+    
 
-
-@planting_status_blueprint.route('/api/planting-time', methods=['GET'])
-def get_planting_time():
+@planting_status_blueprint.route('/api/current-info', methods=['GET'])
+def get_current_info():
     plantings_data = Plantings.query.first()
 
     current_date = datetime.datetime.today()
@@ -27,17 +27,7 @@ def get_planting_time():
         'status': 'success',
         'data': {
             'planting_name': plantings_data.name,
-            'planting_time': planting_time.days
-        }
-    }), 200
-
-@planting_status_blueprint.route('/api/current-info', methods=['GET'])
-def get_current_info():
-    plantings_data = Plantings.query.first()
-
-    return jsonify({
-        'status': 'success',
-        'data': {
+            'planting_time': planting_time.days,
             'current_humidity': plantings_data.current_humidity,
             'current_temperature': plantings_data.current_temperature,
             'hours_backlit': plantings_data.hours_backlit
