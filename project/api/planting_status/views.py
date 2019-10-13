@@ -5,11 +5,11 @@ import datetime
 
 from project import db
 from .models import Machines, Plantings, Seedlings
+from flask import request
 
 planting_status_blueprint = Blueprint('planting_status', __name__)
+from project import db
 from .models import Machines, Plantings, Seedlings
-
-
 
 @planting_status_blueprint.route('/api/ping', methods=['GET'])
 def ping():
@@ -60,12 +60,14 @@ def image_processing_results():
     sprouted_seedlings = request_data['sprouted_seedlings']
     green_percentage = request_data['green_percentage']
 
-    response = {
-        'planting_id' : planting_id,
+    planting = Plantings.query.filter_by(id=planting_id).first()
+    planting.sprouted_seedlings = sprouted_seedlings
+    db.session.add(planting)
+    db.session.commit()
+    db.session.close()
+
+    return jsonify({
+        'success' : True,
         'sprouted_seedlings' : sprouted_seedlings,
-        'green_percentage' : green_percentage
-    }
-
-    print(response)
-
-    return jsonify(response.json()), 200
+        'green_percentage' : green_percentage,
+        'planting_id' : planting_id}), 200
