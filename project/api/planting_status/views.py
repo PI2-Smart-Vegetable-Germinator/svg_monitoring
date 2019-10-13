@@ -52,3 +52,20 @@ def get_id():
     return jsonify({
         'response': machines.id
     }), 200
+
+@planting_status_blueprint.route('/api/image_processing_results', methods=['POST'])
+def image_processing_results():
+    request_data = request.get_json()
+    planting_id = request_data['planting_id']
+    sprouted_seedlings = request_data['sprouted_seedlings']
+    green_percentage = request_data['green_percentage']
+
+    response = {
+        'planting_id' : planting_id,
+        'sprouted_seedlings' : sprouted_seedlings,
+        'green_percentage' : green_percentage
+    }
+
+    print(response)
+
+    return jsonify(response.json()), 200
