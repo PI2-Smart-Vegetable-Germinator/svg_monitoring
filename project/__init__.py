@@ -1,6 +1,8 @@
 import os
 import unittest
 
+import firebase_admin
+
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
@@ -27,6 +29,8 @@ bcrypt.init_app(app)
 jwt.init_app(app)
 
 CORS(app)
+
+firebase_admin.initialize_app()
 
 from project.api.planting_status.views import planting_status_blueprint
 app.register_blueprint(planting_status_blueprint)

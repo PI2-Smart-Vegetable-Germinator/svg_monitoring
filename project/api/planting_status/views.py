@@ -4,6 +4,7 @@ from flask import jsonify
 import datetime
 
 from project import db
+from project.api.utils.notifications import NotificationSender
 from .models import Machines, Plantings, Seedlings
 
 planting_status_blueprint = Blueprint('planting_status', __name__)
