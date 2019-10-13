@@ -31,3 +31,16 @@ def get_planting_time():
             'planting_time': planting_time.days
         }
     }), 200
+
+@planting_status_blueprint.route('/api/current-info', methods=['GET'])
+def get_current_info():
+    plantings_data = Plantings.query.first()
+
+    return jsonify({
+        'status': 'success',
+        'data': {
+            'current_humidity': plantings_data.current_humidity,
+            'current_temperature': plantings_data.current_temperature,
+            'hours_backlit': plantings_data.hours_backlit
+        }
+    }), 200
