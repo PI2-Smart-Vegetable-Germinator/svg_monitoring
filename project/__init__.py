@@ -2,6 +2,7 @@ import os
 import unittest
 
 from flask import Flask
+from flask import jsonify
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -57,12 +58,15 @@ def update_planting_photos():
     db.session.close()
     return response
 
+@app.route('/test_image_processing', methods=['GET'])
+def test_image_processing():
+    response = update_planting_photos()
+    return jsonify(response.json()), response.status_code
+
 cron = BackgroundScheduler()
 cron.add_job(update_planting_photos, 'cron', minute=00, hour=10)
 
 cron.start()
-
-update_planting_photos()
 
 @app.cli.command('test')
 def test():
