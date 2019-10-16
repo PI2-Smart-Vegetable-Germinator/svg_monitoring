@@ -9,7 +9,7 @@ services:
     volumes:
       - '.:/app'
     external_links:
-      - svg_gateway_app_1:svg_gateway
+      - svg_gateway_app_1:svg_gateway 
     environment:
       - FLASK_APP=project/__init__.py
       - FLASK_ENV=development

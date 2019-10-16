@@ -12,8 +12,8 @@ class PlantingStatusTest(BaseTestCase):
         self.assert200(response)
 
 
-class PlantingTimeStatus(BaseTestCase):
-    def test_get_planting_time(self):
+class PlantingCurrentInfo(BaseTestCase):
+    def test_get_current_info(self):
 
         current_date = datetime.datetime.today()
 
@@ -23,10 +23,11 @@ class PlantingTimeStatus(BaseTestCase):
         db.session.commit()
 
         with self.client:
-            response = self.client.get('/api/planting-time')
+            response = self.client.get('/api/current-info')
             data = json.loads(response.data.decode())
 
             self.assertEqual(response.status_code, 200)
             self.assertIn('success', data['status'])
             self.assertEqual(0, data['data']['planting_time'])
             self.assertIn('Tomate', data['data']['planting_name'])
+            self.assertEqual(20, data['data']['current_humidity'])

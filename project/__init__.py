@@ -10,13 +10,19 @@ import firebase_admin
 import requests
 
 from flask import Flask
+from flask import jsonify
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+import logging
+import requests
+import json
+logging.basicConfig(filename='app.log', level=logging.INFO)
 
+from apscheduler.schedulers.background import BackgroundScheduler
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -46,6 +52,7 @@ app.register_blueprint(planting_status_blueprint)
 from project.api.planting_status.models import *
 from project.api.irrigation.models import *
 from project.api.illumination.models import *
+
 
 from project.api.utils.notifications import NotificationSender
 from project.api.utils import constants
@@ -78,8 +85,31 @@ def check_harvest_time():
 
     db.session.close()
 
+
+from .api.planting_status.models import Machines, Plantings, Seedlings
+
+def update_planting_photos():
+    plantings = Plantings.query.filter_by(cycle_finished='false')
+    
+    for planting in plantings:
+        machine = Machines.query.filter_by(id=planting.machine_id).first()
+        if machine:
+            rasp_ip = machine.raspberry_ip
+            data={'raspberry_ip' : str(rasp_ip), 'planting_id' : planting.id}
+            response = requests.post('%s/api/trigger_image_capture' % os.getenv('SVG_GATEWAY_BASE_URI'), json=data)
+    
+    db.session.close()
+    return response
+
+@app.route('/test_image_processing', methods=['GET'])
+def test_image_processing():
+    response = update_planting_photos()
+    return jsonify(response.json()), response.status_code
+
 cron = BackgroundScheduler()
 cron.add_job(check_harvest_time, 'cron', minute=00, hour=8)
+cron.add_job(update_planting_photos, 'cron', minute=00, hour=10)
+
 cron.start()
 
 

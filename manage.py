@@ -17,8 +17,8 @@ def recreatedb():
 @cli.command()
 def seed():
     seedMachine(db)
-    seedPlanting(db)
     seedSeedlings(db)
+    seedPlanting(db)
 
 
 if __name__ == "__main__":
