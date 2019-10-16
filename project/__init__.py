@@ -1,5 +1,13 @@
+from datetime import datetime
+from datetime import timedelta
 import os
 import unittest
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
+import firebase_admin
+
+import requests
 
 from flask import Flask
 from flask import jsonify
@@ -35,6 +43,8 @@ jwt.init_app(app)
 
 CORS(app)
 
+firebase_admin.initialize_app()
+
 from project.api.planting_status.views import planting_status_blueprint
 app.register_blueprint(planting_status_blueprint)
 
@@ -42,6 +52,39 @@ app.register_blueprint(planting_status_blueprint)
 from project.api.planting_status.models import *
 from project.api.irrigation.models import *
 from project.api.illumination.models import *
+
+
+from project.api.utils.notifications import NotificationSender
+from project.api.utils import constants
+
+from project.api.crons.harvest_time import filter_device_ids
+from project.api.crons.harvest_time import notify_close_harvest
+
+def check_harvest_time():
+    plantings = Plantings.query.filter_by(cycle_finished=False)
+    today = datetime.now()
+
+    close_to_harvest_plantings = []
+
+    for planting in plantings:
+        harvest_time = planting.seedling.average_harvest_time
+        ellapsed_days_since_planting = (today - planting.planting_date).days
+
+        days_from_threshold = harvest_time - ellapsed_days_since_planting
+
+        if days_from_threshold <= constants.DaysForHarvestNotificationThreshold:
+            close_to_harvest_plantings.append((planting, days_from_threshold))
+
+    response = requests.get('%s/api/users' % os.getenv('SVG_GATEWAY_BASE_URI'))
+    if response.status_code == 200:
+        response_json = response.json()
+        sender = NotificationSender()
+
+        device_ids = filter_device_ids(response_json['users'], close_to_harvest_plantings)
+        notify_close_harvest(sender, device_ids)
+
+    db.session.close()
+
 
 from .api.planting_status.models import Machines, Plantings, Seedlings
 
@@ -64,9 +107,11 @@ def test_image_processing():
     return jsonify(response.json()), response.status_code
 
 cron = BackgroundScheduler()
+cron.add_job(check_harvest_time, 'cron', minute=00, hour=8)
 cron.add_job(update_planting_photos, 'cron', minute=00, hour=10)
 
 cron.start()
+
 
 @app.cli.command('test')
 def test():
