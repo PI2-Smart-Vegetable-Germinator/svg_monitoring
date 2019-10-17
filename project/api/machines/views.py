@@ -35,3 +35,23 @@ def create_or_update_machine():
     return jsonify({
         'success': True
     }), 201
+
+
+@machines_blueprint.route('/api/confirm_pairing', methods=['POST'])
+def confirm_pairing():
+    post_data = request.get_json()
+
+    pincode = post_data['pincode']
+
+    machine = Machines.query.filter_by(pincode=pincode).first()
+
+    if machine is None:
+        return jsonify({
+            'success': False,
+            'message': 'Invalid pincode!'
+        }), 404
+
+    return jsonify({
+        'success': True,
+        'machineId': machine.id
+    }), 201
