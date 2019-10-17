@@ -2,7 +2,7 @@ from project.api.planting_status.models import Machines, Plantings, Seedlings
 
 
 def seedMachine(db):
-    db.session.add(Machines(pincode=1234, raspberry_ip='192.168.1.8', currently_backlit=False, currently_irrigating=False, smart_irrigation_enabled=False, smart_illumination_enabled=False, planting_active=False))
+    db.session.add(Machines(pincode=1234, raspberry_ip='127.0.0.1', currently_backlit=False, currently_irrigating=False, smart_irrigation_enabled=False, smart_illumination_enabled=False, planting_active=False))
     db.session.commit()
 
 

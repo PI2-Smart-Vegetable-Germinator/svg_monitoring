@@ -1,6 +1,8 @@
 __pycache__
-env
+.env
 .vscode/
 htmlcov/
 .coverage
 coverage.xml
+service-account.json
+app.log
