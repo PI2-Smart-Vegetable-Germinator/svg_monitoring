@@ -40,7 +40,7 @@ class Plantings(db.Model):
     current_temperature = db.Column(db.Integer)
     hours_backlit = db.Column(db.Integer)
     cycle_finished = db.Column(db.Boolean)
-    cycle_ending_date = db.Column(db.DateTime)
+    cycle_ending_date = db.Column(db.DateTime, default=None)
     picture_url = db.Column(db.String(200))
 
     machine_id = db.Column(db.Integer, db.ForeignKey('machines.id'))
@@ -53,17 +53,6 @@ class Plantings(db.Model):
         "IrrigationsHistory", back_populates="planting")
     illuminations_history = db.relationship(
         "IlluminationsHistory", back_populates="planting")
-
-    def to_json(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'planting_date': self.planting_date,
-            'cycle_ending_date': self.cycle_ending_date,
-            'cycle_finished': self.cycle_finished,
-            'picture_url': self.picture_url,
-            'seedling_id': self.seedling_id
-        }
 
 
 class Seedlings(db.Model):
