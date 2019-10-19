@@ -20,7 +20,8 @@ class Machines(db.Model):
     illumination_schedules = db.relationship(
         "IlluminationSchedules", back_populates="machine")
 
-    def __init__(self, pincode, raspberry_ip, currently_backlit, currently_irrigating, smart_irrigation_enabled, smart_illumination_enabled, planting_active):
+
+    def __init__(self, pincode=None, raspberry_ip=None, currently_backlit=None, currently_irrigating=None, smart_irrigation_enabled=None, smart_illumination_enabled=None, planting_active=None):
         self.pincode = pincode
         self.raspberry_ip = raspberry_ip
         self.currently_backlit = currently_backlit
@@ -63,3 +64,42 @@ class Seedlings(db.Model):
     humidity_threshold = db.Column(db.Integer)
 
     plantings = db.relationship("Plantings", back_populates="seedling")
+
+class IrrigationSchedules(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    start_time = db.Column(db.DateTime, nullable=False)
+
+    machine_id = db.Column(db.Integer, db.ForeignKey('machines.id'))
+    machine = db.relationship("Machines", back_populates="irrigation_schedules")
+
+
+class IrrigationsHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    irrigation_date = db.Column(db.DateTime, nullable=False)
+    irrigation_mode = db.Column(db.Integer, nullable=False)
+
+    planting_id = db.Column(db.Integer, db.ForeignKey('plantings.id'))
+    planting = db.relationship("Plantings", back_populates="irrigations_history")
+
+
+class IlluminationSchedules(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=False)
+
+    machine_id = db.Column(db.Integer, db.ForeignKey('machines.id'))
+    machine = db.relationship("Machines", back_populates="illumination_schedules")
+
+
+class IlluminationsHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    illumination_start_date = db.Column(db.DateTime, nullable=False)
+    illumination_end_date = db.Column(db.DateTime)
+    illumination_mode = db.Column(db.Integer, nullable=False)
+
+    planting_id = db.Column(db.Integer, db.ForeignKey('plantings.id'))
+    planting = db.relationship("Plantings", back_populates="illuminations_history")

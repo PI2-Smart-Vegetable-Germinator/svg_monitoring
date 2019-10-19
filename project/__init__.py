@@ -17,10 +17,8 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-import logging
 import requests
 import json
-logging.basicConfig(filename='app.log', level=logging.INFO)
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -46,7 +44,9 @@ CORS(app)
 firebase_admin.initialize_app()
 
 from project.api.planting_status.views import planting_status_blueprint
+from project.api.machines.views import machines_blueprint
 app.register_blueprint(planting_status_blueprint)
+app.register_blueprint(machines_blueprint)
 
 
 from project.api.planting_status.models import *
