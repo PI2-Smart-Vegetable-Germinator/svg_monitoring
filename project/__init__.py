@@ -78,6 +78,9 @@ def check_harvest_time():
     response = requests.get('%s/api/users' % os.getenv('SVG_GATEWAY_BASE_URI'))
     if response.status_code == 200:
         response_json = response.json()
+
+        print(response_json)
+
         sender = NotificationSender()
 
         device_ids = filter_device_ids(response_json['users'], close_to_harvest_plantings)

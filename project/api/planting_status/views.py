@@ -12,26 +12,29 @@ planting_status_blueprint = Blueprint('planting_status', __name__)
 from project import db
 from .models import Machines, Plantings, Seedlings
 
-@planting_status_blueprint.route('/api/ping', methods=['GET'])
+from .schemas import PlantingsSchema
+
+@planting_status_blueprint.route('/api/ping/', methods=['GET'])
 def ping():
     return jsonify({
         'response': 'pong!'
     }), 200
 
-
+# ! se estiver ao contrário, trocar para pegar o ultimo !
 @planting_status_blueprint.route('/api/current-info', methods=['GET'])
 def get_current_info():
-    plantings_data = Plantings.query.first()
+    plantings_data = Plantings.query.order_by(Plantings.id.desc()).first()
 
-    harvest_time = 0
+    cycle_remaining_days = 0
 
     current_date = datetime.datetime.today()
     planting_time = current_date - plantings_data.planting_date
 
     if plantings_data.cycle_finished:
-        harvest_time = -1
+        cycle_remaining_days = -1
     else:
-        harvest_time = (plantings_data.seedling.average_harvest_time - planting_time.days)
+        cycle_remaining_days = (
+            plantings_data.seedling.average_harvest_time - planting_time.days)
 
     return jsonify({
         'status': 'success',
@@ -41,9 +44,26 @@ def get_current_info():
             'current_humidity': plantings_data.current_humidity,
             'current_temperature': plantings_data.current_temperature,
             'hours_backlit': plantings_data.hours_backlit,
-            'cycle_remaining_days': harvest_time
+            'cycle_remaining_days': cycle_remaining_days
         }
     }), 200
+
+
+@planting_status_blueprint.route('/api/plantings-history/<machine_id>/', methods=['GET'])
+def get_plantings_history(machine_id):
+
+    schema = PlantingsSchema()
+
+    plantings = Plantings.query.filter_by(machine_id=int(machine_id)).order_by(Plantings.id.desc()).all()
+
+    return jsonify({
+        'status': 'success',
+        'data': {
+            'plantings_history': [schema.dump(planting) for planting in plantings]
+        }
+    }), 200
+
+
 @planting_status_blueprint.route('/api/get_id', methods=['GET'])
 def get_id():
     machines = Machines.query.first()
@@ -51,6 +71,7 @@ def get_id():
     return jsonify({
         'response': machines.id
     }), 200
+    
 
 @planting_status_blueprint.route('/api/image_processing_results', methods=['POST'])
 def image_processing_results():

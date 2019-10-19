@@ -1,4 +1,5 @@
 from project import db
+import datetime
 
 
 class Machines(db.Model):
@@ -39,6 +40,7 @@ class Plantings(db.Model):
     current_temperature = db.Column(db.Integer)
     hours_backlit = db.Column(db.Integer)
     cycle_finished = db.Column(db.Boolean)
+    cycle_ending_date = db.Column(db.DateTime, default=None)
     picture_url = db.Column(db.String(200))
 
     machine_id = db.Column(db.Integer, db.ForeignKey('machines.id'))
