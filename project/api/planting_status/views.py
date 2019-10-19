@@ -23,7 +23,7 @@ def ping():
 # ! se estiver ao contrário, trocar para pegar o ultimo !
 @planting_status_blueprint.route('/api/current-info', methods=['GET'])
 def get_current_info():
-    plantings_data = Plantings.query.first()
+    plantings_data = Plantings.query.order_by(Plantings.id.desc()).first()
 
     cycle_remaining_days = 0
 
@@ -54,7 +54,7 @@ def get_plantings_history(machine_id):
 
     schema = PlantingsSchema()
 
-    plantings = Plantings.query.filter_by(machine_id=int(machine_id))
+    plantings = Plantings.query.filter_by(machine_id=int(machine_id)).order_by(Plantings.id.desc()).all()
 
     return jsonify({
         'status': 'success',
