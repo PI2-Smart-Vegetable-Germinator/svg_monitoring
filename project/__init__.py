@@ -17,10 +17,8 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-import logging
 import requests
 import json
-logging.basicConfig(filename='app.log', level=logging.INFO)
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
