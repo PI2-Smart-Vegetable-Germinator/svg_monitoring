@@ -13,6 +13,7 @@ from project import db
 from .models import Machines, Plantings, Seedlings
 
 from .schemas import PlantingsSchema
+from .schemas import PlantingInfoSchema
 
 @planting_status_blueprint.route('/api/ping/', methods=['GET'])
 def ping():
@@ -47,6 +48,23 @@ def get_current_info():
             'cycle_remaining_days': cycle_remaining_days
         }
     }), 200
+
+@planting_status_blueprint.route('/api/update_current_info', methods=['POST'])
+def update_current_info():
+    post_data = request.get_json()
+
+    schema = PlantingInfoSchema()
+
+    planting = Plantings.query.filter_by(id=post_data).first()
+
+    planting_update = schema.load(planting, instance=planting, partial=True)
+
+    db.session.add(machine_update)
+    db.session.commit()
+
+    return jsonify({
+        'success': True
+    }), 201
 
 
 @planting_status_blueprint.route('/api/plantings-history/<machine_id>/', methods=['GET'])
