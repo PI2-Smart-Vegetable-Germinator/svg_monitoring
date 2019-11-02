@@ -19,10 +19,10 @@ class PlantingsSchema(ma.ModelSchema):
 
 
 class PlantingInfoSchema(ma.ModelSchema):
-    id = fields.Integer
+    id = fields.Integer(data_key='plantingId')
     current_humidity = fields.Integer(data_key='currentHumidity')
     current_temperature = fields.Integer(data_key='currentTemperature')
 
     class Meta:
         model = Plantings
-        fields = ('id', 'current_humidity', 'current_temperature')
+        fields = ('id', 'name', 'current_humidity', 'current_temperature')

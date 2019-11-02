@@ -49,17 +49,17 @@ def get_current_info():
         }
     }), 200
 
-@planting_status_blueprint.route('/api/update_current_info', methods=['POST'])
+@planting_status_blueprint.route('/api/update_planting_info', methods=['POST'])
 def update_current_info():
     post_data = request.get_json()
 
     schema = PlantingInfoSchema()
 
-    planting = Plantings.query.filter_by(id=post_data).first()
+    planting = Plantings.query.filter_by(id=post_data.get('plantingId')).first()
 
-    planting_update = schema.load(planting, instance=planting, partial=True)
+    planting_update = schema.load(post_data, instance=planting, partial=True)
 
-    db.session.add(machine_update)
+    db.session.add(planting_update)
     db.session.commit()
 
     return jsonify({
