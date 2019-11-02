@@ -1,6 +1,10 @@
 from flask import Blueprint
 from flask import jsonify
 
+import sys
+import os
+import requests
+
 import datetime
 
 from project import db
@@ -61,6 +65,32 @@ def update_current_info():
 
     db.session.add(planting_update)
     db.session.commit()
+
+    if planting.current_humidity <= planting.seedling.humidity_threshold:
+        auth_response = requests.get('%s/api/users' % os.getenv('SVG_GATEWAY_BASE_URI'))
+
+        if auth_response.status_code == 200:
+            auth_response_content = auth_response.json()
+            users = auth_response_content['users']
+
+            device_ids = [
+                user['deviceId']
+                for user in users
+                if user['machineId'] == planting.machine_id and user['deviceId']
+            ]
+
+            sender = NotificationSender()
+            notification = {
+                'title': 'Umidade baixa!',
+                'body': 'A umidade em sua SVG está baixa! Considere ativar a irrigação.'
+            }
+
+            try:
+                for device_id in device_ids:
+                    print(device_id)
+                    sender.send_message(device_id, notification)
+            except Exception as e:
+                print(str(e), file=sys.stderr)
 
     return jsonify({
         'success': True
