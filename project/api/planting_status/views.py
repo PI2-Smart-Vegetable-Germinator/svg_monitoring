@@ -19,7 +19,7 @@ from .models import Machines, Plantings, Seedlings
 from .schemas import PlantingsSchema
 from .schemas import PlantingInfoSchema
 
-@planting_status_blueprint.route('/api/ping/', methods=['GET'])
+@planting_status_blueprint.route('/api/ping', methods=['GET'])
 def ping():
     return jsonify({
         'response': 'pong!'
