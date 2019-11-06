@@ -25,6 +25,32 @@ def ping():
         'response': 'pong!'
     }), 200
 
+@planting_status_blueprint.route('/api/planting', methods=['POST'])
+def start_planting():
+    post_data = request.get_json()
+    planting = Plantings()
+
+    planting.planting_date = datetime.datetime.now()
+    planting.seedling_id = post_data.get('seedlingId')
+    planting.machine_id = post_data.get('machineId')
+    planting.current_humidity = post_data.get('currentHumidity')
+    planting.current_temperature = post_data.get('currentTemperature')
+    planting.sprouted_seedlings = 0
+    planting.hours_backlit = 0
+    planting.name = "Plantio #"
+
+    db.session.add(planting)
+    db.session.flush()
+
+    planting.name += str(planting.id)
+
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'plantingId': planting.id
+    }), 201
+
 # ! se estiver ao contrário, trocar para pegar o ultimo !
 @planting_status_blueprint.route('/api/current-info', methods=['GET'])
 def get_current_info():
