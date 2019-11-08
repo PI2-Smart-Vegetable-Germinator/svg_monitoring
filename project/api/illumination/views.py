@@ -20,7 +20,7 @@ def start_illumination():
   planting = Plantings.query.filter_by(id=planting_id).first()
 
   # We can't start an illumination if the machine is already doing it.
-  if planting and planting.machine.currently_irrigating:
+  if planting and planting.machine.currently_backlit:
     return jsonify({
         'success': False,
         'message': 'Is already being illuminated!'
