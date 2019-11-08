@@ -42,6 +42,8 @@ def start_planting():
     db.session.add(planting)
     db.session.flush()
 
+    planting.machine.planting_active = True
+
     planting.name += str(planting.id)
 
     db.session.commit()
@@ -49,6 +51,23 @@ def start_planting():
     return jsonify({
         'success': True,
         'plantingId': planting.id
+    }), 201
+
+@planting_status_blueprint.route('/api/end_planting', methods=['POST'])
+def end_planting():
+    post_data = request.get_json()
+
+    planting = Plantings.query.filter_by(id=post_data.get('plantingId')).first()
+
+    planting.cycle_ending_date = datetime.datetime.now()
+    planting.cycle_finished = True
+    planting.machine.planting_active = False
+
+    db.session.add(planting)
+    db.session.commit()
+
+    return jsonify({
+        'success': True
     }), 201
 
 # ! se estiver ao contrário, trocar para pegar o ultimo !
@@ -145,7 +164,7 @@ def get_id():
     return jsonify({
         'response': machines.id
     }), 200
-    
+
 
 @planting_status_blueprint.route('/api/image_processing_results', methods=['POST'])
 def image_processing_results():
