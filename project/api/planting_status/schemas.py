@@ -12,8 +12,17 @@ class PlantingsSchema(ma.ModelSchema):
     picture_url = fields.Str(data_key='picture_url')
     seedling_id = fields.Integer(data_key='seedling_id')
 
+    class Meta:
+        model = Plantings
+        fields = ('id', 'name', 'planting_date', 'cycle_ending_date', 'cycle_finished', 'picture_url',
+                'seedling_id')
 
-class Meta:
-    model = Plantings
-    fields = ('id', 'name', 'planting_date', 'cycle_ending_date', 'cycle_finished', 'picture_url',
-              'seedling_id')
+
+class PlantingInfoSchema(ma.ModelSchema):
+    id = fields.Integer(data_key='plantingId')
+    current_humidity = fields.Integer(data_key='currentHumidity')
+    current_temperature = fields.Integer(data_key='currentTemperature')
+
+    class Meta:
+        model = Plantings
+        fields = ('id', 'name', 'current_humidity', 'current_temperature')

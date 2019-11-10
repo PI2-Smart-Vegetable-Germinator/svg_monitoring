@@ -45,8 +45,10 @@ firebase_admin.initialize_app()
 
 from project.api.planting_status.views import planting_status_blueprint
 from project.api.machines.views import machines_blueprint
+from project.api.irrigation.views import irrigation_blueprint
 app.register_blueprint(planting_status_blueprint)
 app.register_blueprint(machines_blueprint)
+app.register_blueprint(irrigation_blueprint)
 
 
 from project.api.planting_status.models import *
