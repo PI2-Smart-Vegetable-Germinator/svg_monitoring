@@ -101,7 +101,11 @@ def get_current_info(machine_id):
                 'current_temperature': plantings_data.current_temperature,
                 'hours_backlit': plantings_data.hours_backlit,
                 'cycle_remaining_days': cycle_remaining_days,
-                'active_planting': machine_data.planting_active
+                'active_planting': machine_data.planting_active,
+                'currently_backlit': machine_data.currently_backlit,
+                'currently_irrigating': machine_data.currently_irrigating,
+                'smart_irrigation_enabled': machine_data.smart_irrigation_enabled,
+                'smart_illumination_enabled': machine_data.smart_illumination_enabled
             }
         }), 200
     else:

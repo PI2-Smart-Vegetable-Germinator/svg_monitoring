@@ -50,7 +50,15 @@ def end_illumination():
 
     planting.machine.currently_backlit = False
 
+    illumination = IlluminationsHistory.query.order_by(IlluminationsHistory.id.desc()).first()
+
+    illumination.illumination_end_date = datetime.now()
+    illumination.illumination_mode = IlluminationModes.ManualIllumination.value
+    illumination.planting = planting
+
     db.session.add(planting)
+    db.session.add(illumination)
+
     db.session.commit()
 
     return jsonify({ 'success': True }), 201
