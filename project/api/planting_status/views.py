@@ -99,33 +99,51 @@ def end_planting():
         'success': True
     }), 201
 
-# ! se estiver ao contrário, trocar para pegar o ultimo !
-@planting_status_blueprint.route('/api/current-info', methods=['GET'])
-def get_current_info():
-    plantings_data = Plantings.query.order_by(Plantings.id.desc()).first()
 
-    cycle_remaining_days = 0
+@planting_status_blueprint.route('/api/current-info/<machine_id>/', methods=['GET'])
+def get_current_info(machine_id):
 
-    current_date = datetime.datetime.today()
-    planting_time = current_date - plantings_data.planting_date
+    machine_data = Machines.query.filter_by(id=int(machine_id)).first()
 
-    if plantings_data.cycle_finished:
-        cycle_remaining_days = -1
+    if machine_data.planting_active:
+
+        plantings_data = Plantings.query.order_by(Plantings.id.desc()).first()
+
+        cycle_remaining_days = 0
+
+        current_date = datetime.datetime.today()
+        planting_time = current_date - plantings_data.planting_date
+
+        if plantings_data.cycle_finished:
+            cycle_remaining_days = -1
+        else:
+            cycle_remaining_days = (
+                plantings_data.seedling.average_harvest_time - planting_time.days)
+
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'planting_id': plantings_data.id,
+                'planting_name': plantings_data.name,
+                'planting_time': planting_time.days,
+                'current_humidity': plantings_data.current_humidity,
+                'current_temperature': plantings_data.current_temperature,
+                'hours_backlit': plantings_data.hours_backlit,
+                'cycle_remaining_days': cycle_remaining_days,
+                'active_planting': machine_data.planting_active,
+                'currently_backlit': machine_data.currently_backlit,
+                'currently_irrigating': machine_data.currently_irrigating,
+                'smart_irrigation_enabled': machine_data.smart_irrigation_enabled,
+                'smart_illumination_enabled': machine_data.smart_illumination_enabled
+            }
+        }), 200
     else:
-        cycle_remaining_days = (
-            plantings_data.seedling.average_harvest_time - planting_time.days)
-
-    return jsonify({
-        'status': 'success',
-        'data': {
-            'planting_name': plantings_data.name,
-            'planting_time': planting_time.days,
-            'current_humidity': plantings_data.current_humidity,
-            'current_temperature': plantings_data.current_temperature,
-            'hours_backlit': plantings_data.hours_backlit,
-            'cycle_remaining_days': cycle_remaining_days
-        }
-    }), 200
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'active_planting': machine_data.planting_active
+            }
+        }), 200
 
 @planting_status_blueprint.route('/api/update_planting_info', methods=['POST'])
 def update_current_info():
