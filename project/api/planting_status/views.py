@@ -48,6 +48,35 @@ def start_planting():
 
     db.session.commit()
 
+    auth_response = requests.get('%s/api/users' % os.getenv('SVG_GATEWAY_BASE_URI'))
+    if auth_response.status_code == 200:
+        auth_response_content = auth_response.json()
+        users = auth_response_content['users']
+
+        device_ids = [
+            user['deviceId']
+            for user in users
+            if user['machineId'] == planting.machine_id and user['deviceId']
+        ]
+
+        print(device_ids)
+
+        sender = NotificationSender()
+        notification = {
+            'title': 'Plantio iniciado!',
+            'body': 'Um novo plantio foi iniciado em sua SVG!',
+            'dataContent': {
+                'code': 'SVG_PLANTING_STARTED'
+            }
+        }
+
+        try:
+            for device_id in device_ids:
+                print(device_id)
+                sender.send_message(device_id, notification)
+        except Exception as e:
+            print(str(e), file=sys.stderr)
+
     return jsonify({
         'success': True,
         'plantingId': planting.id
@@ -183,4 +212,5 @@ def image_processing_results():
         'success' : True,
         'sprouted_seedlings' : sprouted_seedlings,
         'green_percentage' : green_percentage,
-        'planting_id' : planting_id}), 200
+        'planting_id' : planting_id
+    }), 200
