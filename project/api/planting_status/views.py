@@ -66,7 +66,8 @@ def start_planting():
             'title': 'Plantio iniciado!',
             'body': 'Um novo plantio foi iniciado em sua SVG!',
             'dataContent': {
-                'code': 'SVG_PLANTING_STARTED'
+                'code': 'SVG_PLANTING_STARTED',
+                'click_action': 'FLUTTER_NOTIFICATION_CLICK'
             }
         }
 
@@ -158,20 +159,35 @@ def update_current_info():
     db.session.add(planting_update)
     db.session.commit()
 
-    if planting.current_humidity <= planting.seedling.humidity_threshold:
-        auth_response = requests.get('%s/api/users' % os.getenv('SVG_GATEWAY_BASE_URI'))
+    auth_response = requests.get('%s/api/users' % os.getenv('SVG_GATEWAY_BASE_URI'))
 
-        if auth_response.status_code == 200:
-            auth_response_content = auth_response.json()
-            users = auth_response_content['users']
+    if auth_response.status_code == 200:
+        auth_response_content = auth_response.json()
+        users = auth_response_content['users']
 
-            device_ids = [
-                user['deviceId']
-                for user in users
-                if user['machineId'] == planting.machine_id and user['deviceId']
-            ]
+        device_ids = [
+            user['deviceId']
+            for user in users
+            if user['machineId'] == planting.machine_id and user['deviceId']
+        ]
 
-            sender = NotificationSender()
+        sender = NotificationSender()
+
+        data_message = {
+            'currentHumidity': str(planting_update.current_humidity),
+            'currentTemperature': str(planting_update.current_temperature),
+            'code': 'SVG_UPDATE_DATA',
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK'
+        }
+
+        try:
+            for device_id in device_ids:
+                print(device_id)
+                sender.send_data_message(device_id, data_message)
+        except Exception as e:
+            print(str(e), file=sys.stderr)
+
+        if planting.current_humidity <= planting.seedling.humidity_threshold:
             notification = {
                 'title': 'Umidade baixa!',
                 'body': 'A umidade em sua SVG está baixa! Considere ativar a irrigação.'
@@ -183,6 +199,8 @@ def update_current_info():
                     sender.send_message(device_id, notification)
             except Exception as e:
                 print(str(e), file=sys.stderr)
+
+
 
     return jsonify({
         'success': True

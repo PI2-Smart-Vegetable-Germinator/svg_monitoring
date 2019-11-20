@@ -7,3 +7,9 @@ class NotificationSender:
         response = messaging.send(message)
 
         return response
+
+    def send_data_message(self, device_id, data):
+        message = messaging.Message(token=device_id, data=data)
+        response = messaging.send(message)
+
+        return response
