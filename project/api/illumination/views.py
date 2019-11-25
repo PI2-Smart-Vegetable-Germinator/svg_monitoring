@@ -14,31 +14,31 @@ illumination_blueprint = Blueprint('illumination', __name__)
 
 @illumination_blueprint.route('/api/start_illumination', methods=['POST'])
 def start_illumination():
-  post_data = request.get_json()
+    post_data = request.get_json()
 
-  planting_id = post_data.get('plantingId')
-  planting = Plantings.query.filter_by(id=planting_id).first()
+    planting_id = post_data.get('plantingId')
+    planting = Plantings.query.filter_by(id=planting_id).first()
 
-  # We can't start an illumination if the machine is already doing it.
-  if planting and planting.machine.currently_backlit:
-    return jsonify({
-        'success': False,
-        'message': 'Is already being illuminated!'
-    }), 403
-  
-  planting.machine.currently_backlit = True
+    # We can't start an illumination if the machine is already doing it.
+    if planting and planting.machine.currently_backlit:
+        return jsonify({
+            'success': False,
+            'message': 'Is already being illuminated!'
+        }), 403
 
-  history_entry = IlluminationsHistory()
-  history_entry.illumination_start_date = datetime.now()
-  history_entry.illumination_mode = IlluminationModes.ManualIllumination.value
-  history_entry.planting = planting
-  
-  db.session.add(planting)
-  db.session.add(history_entry)
+    planting.machine.currently_backlit = True
 
-  db.session.commit()
+    history_entry = IlluminationsHistory()
+    history_entry.illumination_start_date = datetime.now()
+    history_entry.illumination_mode = IlluminationModes.ManualIllumination.value
+    history_entry.planting = planting
 
-  return jsonify({ 'success': True }), 201
+    db.session.add(planting)
+    db.session.add(history_entry)
+
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'currently_backlit': True}), 201
 
 
 @illumination_blueprint.route('/api/end_illumination', methods=['POST'])
@@ -50,7 +50,8 @@ def end_illumination():
 
     planting.machine.currently_backlit = False
 
-    illumination = IlluminationsHistory.query.order_by(IlluminationsHistory.id.desc()).first()
+    illumination = IlluminationsHistory.query.order_by(
+        IlluminationsHistory.id.desc()).first()
 
     illumination.illumination_end_date = datetime.now()
     illumination.illumination_mode = IlluminationModes.ManualIllumination.value
@@ -61,4 +62,4 @@ def end_illumination():
 
     db.session.commit()
 
-    return jsonify({ 'success': True }), 201
+    return jsonify({'status': 'success', 'currently_backlit': False}), 201

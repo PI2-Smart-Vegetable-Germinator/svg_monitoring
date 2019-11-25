@@ -125,6 +125,7 @@ def get_current_info(machine_id):
             'status': 'success',
             'data': {
                 'planting_id': plantings_data.id,
+                'sprouted_seedlings': plantings_data.sprouted_seedlings,
                 'planting_name': plantings_data.name,
                 'planting_time': planting_time.days,
                 'current_humidity': plantings_data.current_humidity,
