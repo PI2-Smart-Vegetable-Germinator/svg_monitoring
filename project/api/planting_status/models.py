@@ -37,7 +37,9 @@ class Plantings(db.Model):
     name = db.Column(db.String(200), nullable=False)
     planting_date = db.Column(db.DateTime)
     sprouted_seedlings = db.Column(db.Integer)
+    # NOTE current_humidity = umidadeSolo
     current_humidity = db.Column(db.Integer)
+    current_air_humidity = db.Column(db.Integer)
     current_temperature = db.Column(db.Integer)
     hours_backlit = db.Column(db.Integer)
     cycle_finished = db.Column(db.Boolean)

@@ -129,6 +129,7 @@ def get_current_info(machine_id):
                 'planting_name': plantings_data.name,
                 'planting_time': planting_time.days,
                 'current_humidity': plantings_data.current_humidity,
+                'current_air_humidity': plantings_data.current_air_humidity,
                 'current_temperature': plantings_data.current_temperature,
                 'hours_backlit': plantings_data.hours_backlit,
                 'cycle_remaining_days': cycle_remaining_days,

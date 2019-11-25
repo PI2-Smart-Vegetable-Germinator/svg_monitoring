@@ -23,7 +23,7 @@ def seedPlanting(db):
     db.session.add(Plantings(name='Cebolinha', planting_date='2019-07-02 15:26:03.478039', sprouted_seedlings=0, current_humidity=30, current_temperature=27, hours_backlit=10, cycle_finished=True, cycle_ending_date='2019-08-15 10:00:03.478039', picture_url='https://planetahuerto-6f4f.kxcdn.com/estaticos/imagenes/articulo_revista/154/154_620x465.jpg', machine=machine, seedling=seedling2))
     db.session.commit()
 
-    db.session.add(Plantings(name='Alface', planting_date='2019-11-09 09:30:03.478039', sprouted_seedlings=0, current_humidity=28, current_temperature=23, hours_backlit=2, cycle_finished=False, picture_url='https://planetahuerto-6f4f.kxcdn.com/estaticos/imagenes/articulo_revista/154/154_620x465.jpg', machine=machine, seedling=seedling))
+    db.session.add(Plantings(name='Alface', planting_date='2019-11-09 09:30:03.478039', sprouted_seedlings=87, current_humidity=28, current_temperature=23, hours_backlit=2, cycle_finished=False, picture_url='https://planetahuerto-6f4f.kxcdn.com/estaticos/imagenes/articulo_revista/154/154_620x465.jpg', machine=machine, seedling=seedling))
     db.session.commit()
 
 
