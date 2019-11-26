@@ -17,6 +17,9 @@ def notify_close_harvest(sender, device_ids):
             notification_body = 'Você já pode retirar as mudas de sua SVG!'
         notification = {
             'title': 'Colheita próxima!',
-            'body': notification_body
+            'body': notification_body,
+            'dataContent': {
+                'code': 'SVG_CLOSE_HARVEST'
+            }
         }
         sender.send_message(device_id[0], notification)

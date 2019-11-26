@@ -19,7 +19,9 @@ class BaseTestCase(TestCase):
         jwt.init_app(app)
 
         from project.api.planting_status.views import planting_status_blueprint
+        from project.api.irrigation.views import irrigation_blueprint
         app.register_blueprint(planting_status_blueprint)
+        app.register_blueprint(irrigation_blueprint)
 
         return app
     
