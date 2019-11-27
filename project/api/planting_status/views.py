@@ -34,6 +34,7 @@ def start_planting():
     planting.seedling_id = post_data.get('seedlingId')
     planting.machine_id = post_data.get('machineId')
     planting.current_humidity = post_data.get('currentHumidity')
+    planting.current_air_humidity = post_data.get('currentAirHumidity')
     planting.current_temperature = post_data.get('currentTemperature')
     planting.sprouted_seedlings = 0
     planting.hours_backlit = 0
