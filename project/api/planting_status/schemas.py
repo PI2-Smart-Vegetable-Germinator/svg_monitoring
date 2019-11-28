@@ -23,7 +23,9 @@ class PlantingInfoSchema(ma.ModelSchema):
     current_humidity = fields.Integer(data_key='currentHumidity')
     current_air_humidity = fields.Integer(data_key='currentAirHumidity')
     current_temperature = fields.Integer(data_key='currentTemperature')
+    hours_backlit = fields.Str(data_key='illuminationTime')
 
     class Meta:
         model = Plantings
-        fields = ('id', 'name', 'current_humidity', 'current_temperature', 'current_air_humidity')
+        fields = ('id', 'name', 'current_humidity', 'current_temperature',
+                'current_air_humidity', 'hours_backlit')
