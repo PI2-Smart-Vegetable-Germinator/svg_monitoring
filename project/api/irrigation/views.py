@@ -60,3 +60,33 @@ def end_irrigation():
     return jsonify({
         'success': True
     }), 201
+
+
+@irrigation_blueprint.route('/api/switch_smart_irrigation/<machine_id>', methods=['POST'])
+def switch_smart_irrigation(machine_id):
+    machine_data = Machines.query.filter_by(id=machine_id).first()
+
+    machine_data.smart_irrigation_enabled = (not machine_data.smart_irrigation_enabled)
+
+    db.session.add(machine_data)
+    db.session.commit()
+
+    print('\n\n inferno')
+    print(machine_data.smart_irrigation_enabled)
+
+    return jsonify({
+        'success': True,
+        'smart_irrigation_status': machine_data.smart_irrigation_enabled
+    }), 201
+
+
+@irrigation_blueprint.route('/api/get_smart_irrigation_status/<machine_id>', methods=['GET'])
+def get_smart_irrigation_status(machine_id):
+    machine_data = Machines.query.filter_by(id=machine_id).first()
+
+    return jsonify({
+        'success': True,
+        'smart_irrigation_status': machine_data.smart_irrigation_enabled
+    }), 201
+
+

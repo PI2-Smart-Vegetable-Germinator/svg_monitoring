@@ -60,7 +60,7 @@ def start_planting():
             if user['machineId'] == planting.machine_id and user['deviceId']
         ]
 
-        print(device_ids)
+        # print(device_ids)
 
         sender = NotificationSender()
         notification = {
@@ -74,7 +74,7 @@ def start_planting():
 
         try:
             for device_id in device_ids:
-                print(device_id)
+                # print(device_id)
                 sender.send_message(device_id, notification)
         except Exception as e:
             print(str(e), file=sys.stderr)
@@ -185,7 +185,7 @@ def update_current_info():
 
         try:
             for device_id in device_ids:
-                print(device_id)
+                # print(device_id)
                 sender.send_data_message(device_id, data_message)
         except Exception as e:
             print(str(e), file=sys.stderr)
@@ -198,7 +198,7 @@ def update_current_info():
 
             try:
                 for device_id in device_ids:
-                    print(device_id)
+                    # print(device_id)
                     sender.send_message(device_id, notification)
             except Exception as e:
                 print(str(e), file=sys.stderr)
