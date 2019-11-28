@@ -23,7 +23,7 @@ import json
 from apscheduler.schedulers.background import BackgroundScheduler
 
 db = SQLAlchemy()
-migrate = Migrate()
+migrate = Migrate(compare_type=True)
 ma = Marshmallow()
 bcrypt = Bcrypt()
 jwt = JWTManager()
