@@ -46,6 +46,7 @@ def start_planting():
     planting.machine.planting_active = True
 
     planting.name += str(planting.id)
+    planting.picture_url = "https://smart-veg-gem.s3-sa-east-1.amazonaws.com/%s.jpg" % planting.id
 
     db.session.commit()
 
