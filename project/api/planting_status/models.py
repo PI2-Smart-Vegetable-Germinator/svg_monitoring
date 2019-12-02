@@ -42,7 +42,7 @@ class Plantings(db.Model):
     current_air_humidity = db.Column(db.Integer)
     current_temperature = db.Column(db.Integer)
     hours_backlit = db.Column(db.String(100))
-    cycle_finished = db.Column(db.Boolean)
+    cycle_finished = db.Column(db.Boolean, default=False)
     cycle_ending_date = db.Column(db.DateTime, default=None)
     picture_url = db.Column(db.String(200))
 
